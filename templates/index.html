@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.6/sweetalert2.min.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.1/css/star-rating.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.6/sweetalert2.min.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.1/js/star-rating.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script src="./static/jquery.countdown.js"></script>
+      <style>
+        .wrap {
+          position: relative;
+          margin-top: 150px;
+        }
+
+        .wrap img {
+          display: table;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .wrap2 {
+          position: relative;
+          margin-top: 20px;
+        }
+
+        .wrap2 div {
+          margin-top: 10px;
+          display: table;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        #question {
+          font-size: 24px; 
+        }
+
+        #answer {
+          font-size: 24px; 
+        }
+      </style>
+      <script type=text/javascript>
+        $(function() {
+            $('#choose').click(function(){
+              var vid = document.getElementById("myvideo");
+              vid.play();
+              document.getElementById("answer").innerHTML = '解答:';
+              $.ajax({
+                url: '/getQuestions',
+                data:{
+                },
+                dataType: 'JSON',
+                type: 'GET',
+                success: function(data){
+                    document.getElementById("question").innerHTML = '問題:' + data.ques;
+                    var d = new Date();
+                    var time;
+                    if(d.getSeconds() < 50) {
+                      time = d.getHours() + ":" + d.getMinutes() + ":" + parseInt(d.getSeconds() + 10);
+                    } else {
+                      time = d.getHours() + ":" + parseInt(d.getMinutes()+1) + ":" + parseInt(d.getSeconds() - 50);
+                    }
+                    $('#clock').countdown('2017/10/14 ' + time)
+                    .on('update.countdown', function(event) {
+                      var format = '%H:%M:%S';
+                      if(event.offset.totalDays > 0) {
+                        format = '%-d day%!d ' + format;
+                      }
+                      if(event.offset.weeks > 0) {
+                        format = '%-w week%!w ' + format;
+                      }
+                      $(this).html(event.strftime(format.slice(6,8)));
+                    })
+                    .on('finish.countdown', function(event) {
+                      $(this).html('時間到!')
+                        .parent().addClass('disabled');
+                        document.getElementById("answer").innerHTML = '解答:' + data.ans;
+                    });
+                }
+              });
+            });
+        });
+
+      </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="wrap">
+        <img src="/static/birthday.png" width="600" height="300">
+      </div>
+      <div class="wrap2">
+        <div>
+          <button class="btn btn-success" id="choose" style="float: left;">開始命運的選題</button>
+        </div>
+        <div>
+          <p id="question">問題:</p>
+        </div>
+        <div class="countdown" style="font-size: 24px">
+          剩餘作答時間:
+          <span id="clock"></span>
+        </div>
+        <div>
+          <p id="answer">解答:</p>
+        </div>
+        <video id="myvideo">
+          <source src="/static/15.mp3" type="audio/mp3">
+        </video>
+      </div>
+    </div>
+  </body>
+</html>
