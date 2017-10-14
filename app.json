@@ -8,6 +8,7 @@
   "environments": {
     "test": {
       "scripts": {
+        "test-setup": "python main.py",
         "test": "python main.py"
       }
     }
