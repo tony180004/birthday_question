@@ -45,6 +45,7 @@
         $(function() {
             $('#choose').click(function(){
               var vid = document.getElementById("myvideo");
+              vid.pause();
               vid.play();
               document.getElementById("answer").innerHTML = '解答:';
               $.ajax({
